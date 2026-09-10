@@ -31,7 +31,7 @@ export default function LoginPage() {
       <form onSubmit={submit} className="w-full max-w-sm rounded-2xl border border-line bg-surface p-6">
         <div className="flex items-center gap-2 font-semibold tracking-tight text-ink">
           <span className="grid size-7 place-items-center rounded-lg bg-accent text-sm font-bold text-accent-ink">S</span>
-          SayRight
+          SayCoach
         </div>
         <label htmlFor="password" className="mt-6 block text-sm font-medium text-ink">
           Password

@@ -35,7 +35,7 @@ export function AppShell({ demo, children }: { demo: boolean; children: React.Re
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
             <span className="grid size-7 place-items-center rounded-lg bg-accent text-sm font-bold text-accent-ink">S</span>
-            SayRight
+            SayCoach
           </Link>
           <nav className="hidden gap-1 sm:flex" aria-label="Main">
             {NAV.map(({ href, label }) => (

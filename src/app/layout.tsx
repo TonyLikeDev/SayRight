@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SayRight: English pronunciation coach",
+  title: "SayCoach: English pronunciation coach",
   description: "Practice speaking English and get feedback on every word and sound.",
-  appleWebApp: { capable: true, title: "SayRight", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "SayCoach", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Card } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Setup · SayRight" };
+export const metadata: Metadata = { title: "Setup · SayCoach" };
 export const dynamic = "force-dynamic";
 
 function Status({ ok, label, detail }: { ok: boolean; label: string; detail: string }) {

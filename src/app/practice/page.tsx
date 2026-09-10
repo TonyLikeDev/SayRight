@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from "@/components/icons";
 import { SentenceStepper } from "@/components/SentenceStepper";
 import { SoundTipCard } from "@/components/SoundTipCard";
 
-export const metadata: Metadata = { title: "Practice · SayRight" };
+export const metadata: Metadata = { title: "Practice · SayCoach" };
 
 export default async function PracticePage({ searchParams }: PageProps<"/practice">) {
   const sp = await searchParams;

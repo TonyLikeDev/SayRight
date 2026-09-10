@@ -14,7 +14,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/lessons/[id]">): Promise<Metadata> {
   const lesson = getLesson((await params).id);
-  return { title: lesson ? `${lesson.title} · SayRight` : "Lesson · SayRight" };
+  return { title: lesson ? `${lesson.title} · SayCoach` : "Lesson · SayCoach" };
 }
 
 export default async function LessonPage({ params }: PageProps<"/lessons/[id]">) {

@@ -1,4 +1,4 @@
-# SayRight
+# SayCoach
 
 A personal English pronunciation coach. Read a sentence (or answer a question) out loud and see
 which words and sounds were right or wrong, hear how a native speaker says it, and track the

@@ -19,6 +19,7 @@ export type Attempt = {
 
 export const FINAL_KEY = "FINAL";
 
+// Keeps the app's original name: renaming the database would lose everyone's history.
 const DB_NAME = "sayright";
 const STORE = "attempts";
 

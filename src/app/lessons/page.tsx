@@ -4,7 +4,7 @@ import { LESSONS, type Lesson } from "@/data/lessons";
 import { getSoundTip } from "@/data/sounds";
 import { LevelChip } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Lessons · SayRight" };
+export const metadata: Metadata = { title: "Lessons · SayCoach" };
 
 function LessonCard({ lesson }: { lesson: Lesson }) {
   const focus = (lesson.focus ?? []).map((k) => getSoundTip(k)?.label).filter(Boolean);
