@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-2: #f0eeea;
+  --ink: #1b1a17;
+  --ink-2: #57534e;
+  --ink-3: #8a857e;
+  --line: #e4e1db;
+  --accent: #3446c9;
+  --accent-ink: #ffffff;
+  --accent-soft: #e8eafb;
+  --good: #1f8a4c;
+  --good-soft: #e3f4ea;
+  --ok: #b86e00;
+  --ok-soft: #fbf0dc;
+  --bad: #c8342b;
+  --bad-soft: #fbe6e4;
+  --record: #d93a2f;
+  --chart: #3446c9;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #121211;
+    --surface: #1b1b19;
+    --surface-2: #252522;
+    --ink: #f1efea;
+    --ink-2: #b7b2a9;
+    --ink-3: #85807a;
+    --line: #2f2e2b;
+    --accent: #8595ff;
+    --accent-ink: #0e1233;
+    --accent-soft: #232846;
+    --good: #4cc27c;
+    --good-soft: #17301f;
+    --ok: #f0a93a;
+    --ok-soft: #33270f;
+    --bad: #ff7a6e;
+    --bad-soft: #3a1b18;
+    --record: #ff5a4e;
+    --chart: #6a7af0;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-record: var(--record);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Geist has no IPA glyphs; use fonts that do. */
+.ipa {
+  font-family: "Charis SIL", "Doulos SIL", "Noto Sans", "Lucida Grande", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: normal;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-pulse-ring {
+    animation: pulse-ring 1.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
 }
