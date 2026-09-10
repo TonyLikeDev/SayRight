@@ -6,7 +6,8 @@ const TICKS_PER_MS = 10_000;
 // Azure's per-sound accuracy is noisy: it gives 80 to a /θ/ that was clearly said as
 // /t/, and 30 to a native speaker's unreleased final /t/. Its ranked guesses of which
 // sound it actually heard (NBestPhonemes) are much more reliable, so we score from those.
-// Calibrated against deliberately mispronounced speech (see README).
+// Thresholds were calibrated on neural-voice speech with deliberate errors
+// (th→t/d, dropped final consonants, wrong vowels, wrong words).
 /** How far ahead another sound must be before we call it a substitution. */
 const SUBSTITUTION_MARGIN = 10;
 /** A sound said as a different sound scores at most this. */
