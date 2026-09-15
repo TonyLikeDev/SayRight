@@ -20,6 +20,11 @@ export async function getSpeechAuth(): Promise<SpeechAuth> {
   return cachedAuth.auth;
 }
 
+/** The token we already have, if it's still valid (no network request). */
+export function peekSpeechAuth(): SpeechAuth | null {
+  return cachedAuth && cachedAuth.expires > Date.now() ? cachedAuth.auth : null;
+}
+
 export function loadSdk() {
   sdkPromise ??= import("microsoft-cognitiveservices-speech-sdk");
   return sdkPromise;
@@ -103,6 +108,108 @@ export async function startAssessment(
       await close();
       if (failure && !segments.length) throw new Error(failure);
       return segments;
+    },
+    cancel() {
+      push.close();
+      void close();
+    },
+  };
+}
+
+export type LiveTranscription = {
+  write(pcm: Int16Array): void;
+  finish(): Promise<string>;
+  cancel(): void;
+};
+
+/**
+ * Start streaming speech-to-text transcription without pronunciation scoring.
+ * Azure decides where a sentence ends from the pause in the audio itself.
+ */
+export async function startTranscription(
+  auth: Extract<SpeechAuth, { mode: "azure" }>,
+  {
+    onText,
+    onSentenceEnd,
+    onError,
+    endSilenceMs = 1500,
+  }: {
+    /** Everything heard so far, updated as words come in. */
+    onText?: (text: string) => void;
+    /** Called once `endSilenceMs` of silence follows speech. */
+    onSentenceEnd?: () => void;
+    /** The connection failed (expired token, no network). */
+    onError?: (message: string) => void;
+    /** Pause that ends a sentence (Azure allows 100–5000 ms). */
+    endSilenceMs?: number;
+  } = {},
+): Promise<LiveTranscription> {
+  const sdk = await loadSdk();
+  const format = sdk.AudioStreamFormat.getWaveFormatPCM(16000, 16, 1);
+  const push = sdk.AudioInputStream.createPushStream(format);
+
+  const speechConfig = sdk.SpeechConfig.fromAuthorizationToken(auth.token, auth.region);
+  speechConfig.speechRecognitionLanguage = "en-US";
+  speechConfig.setProperty(sdk.PropertyId.Speech_SegmentationSilenceTimeoutMs, String(endSilenceMs));
+
+  const recognizer = new sdk.SpeechRecognizer(speechConfig, sdk.AudioConfig.fromStreamInput(push));
+
+  let finalTranscript = "";
+  let failure: string | null = null;
+  let markStopped!: () => void;
+  const stopped = new Promise<void>((resolve) => (markStopped = resolve));
+
+  recognizer.recognizing = (_s, e) => {
+    if (e.result.reason === sdk.ResultReason.RecognizingSpeech && e.result.text) {
+      const interim = (finalTranscript + (finalTranscript ? " " : "") + e.result.text).trim();
+      onText?.(interim);
+    }
+  };
+
+  recognizer.recognized = (_s, e) => {
+    if (e.result.reason === sdk.ResultReason.RecognizedSpeech && e.result.text) {
+      finalTranscript = (finalTranscript + (finalTranscript ? " " : "") + e.result.text).trim();
+      onText?.(finalTranscript);
+      onSentenceEnd?.();
+    }
+  };
+
+  recognizer.canceled = (_s, e) => {
+    if (e.reason === sdk.CancellationReason.Error) {
+      failure = e.errorDetails;
+      onError?.(e.errorDetails);
+    }
+    markStopped();
+  };
+
+  recognizer.sessionStopped = () => markStopped();
+
+  await new Promise<void>((resolve, reject) => recognizer.startContinuousRecognitionAsync(resolve, reject));
+
+  const close = () =>
+    new Promise<void>((resolve) =>
+      recognizer.stopContinuousRecognitionAsync(
+        () => {
+          recognizer.close();
+          resolve();
+        },
+        () => {
+          recognizer.close();
+          resolve();
+        },
+      ),
+    );
+
+  return {
+    write(pcm) {
+      push.write(pcm.buffer.slice(pcm.byteOffset, pcm.byteOffset + pcm.byteLength) as ArrayBuffer);
+    },
+    async finish() {
+      push.close();
+      await Promise.race([stopped, new Promise((r) => setTimeout(r, 15_000))]);
+      await close();
+      if (failure && !finalTranscript) throw new Error(failure);
+      return finalTranscript;
     },
     cancel() {
       push.close();
