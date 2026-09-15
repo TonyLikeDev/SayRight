@@ -20,6 +20,11 @@ export async function getSpeechAuth(): Promise<SpeechAuth> {
   return cachedAuth.auth;
 }
 
+/** The token we already have, if it's still valid (no network request). */
+export function peekSpeechAuth(): SpeechAuth | null {
+  return cachedAuth && cachedAuth.expires > Date.now() ? cachedAuth.auth : null;
+}
+
 export function loadSdk() {
   sdkPromise ??= import("microsoft-cognitiveservices-speech-sdk");
   return sdkPromise;
@@ -126,12 +131,15 @@ export async function startTranscription(
   {
     onText,
     onSentenceEnd,
+    onError,
     endSilenceMs = 1500,
   }: {
     /** Everything heard so far, updated as words come in. */
     onText?: (text: string) => void;
     /** Called once `endSilenceMs` of silence follows speech. */
     onSentenceEnd?: () => void;
+    /** The connection failed (expired token, no network). */
+    onError?: (message: string) => void;
     /** Pause that ends a sentence (Azure allows 100–5000 ms). */
     endSilenceMs?: number;
   } = {},
@@ -167,7 +175,10 @@ export async function startTranscription(
   };
 
   recognizer.canceled = (_s, e) => {
-    if (e.reason === sdk.CancellationReason.Error) failure = e.errorDetails;
+    if (e.reason === sdk.CancellationReason.Error) {
+      failure = e.errorDetails;
+      onError?.(e.errorDetails);
+    }
     markStopped();
   };
 

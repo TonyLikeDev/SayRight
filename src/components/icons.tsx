@@ -34,6 +34,12 @@ export const StopIcon = (p: IconProps) => (
   </Icon>
 );
 
+export const PlusIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </Icon>
+);
+
 export const PlayIcon = (p: IconProps) => (
   <Icon {...p}>
     <path d="M7 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L8.5 4.64A1 1 0 0 0 7 5.5Z" fill="currentColor" stroke="none" />

@@ -38,7 +38,7 @@ export function CustomPractice({ initialText }: { initialText: string }) {
           className="w-full flex-1 resize-none rounded-xl border border-line bg-surface px-3.5 py-3 text-base text-ink outline-none placeholder:text-ink-3 focus:border-accent focus:ring-2 focus:ring-accent/25"
         />
         <div className="flex shrink-0 flex-wrap items-center gap-2 sm:flex-col sm:items-stretch">
-          <VoiceInputButton onTranscript={(spoken) => setDraft(spoken)} />
+          <VoiceInputButton value={draft} onChange={setDraft} />
           <button
             type="submit"
             disabled={!draft.trim() || draft.trim() === text}

@@ -74,7 +74,7 @@ export function HomeView() {
             >
               Practice it <ArrowRightIcon size={18} />
             </button>
-            <VoiceInputButton onTranscript={(spoken) => setText(spoken)} />
+            <VoiceInputButton value={text} onChange={setText} />
           </div>
         </form>
       </Card>
