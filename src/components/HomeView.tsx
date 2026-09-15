@@ -9,6 +9,7 @@ import { getSoundTip } from "@/data/sounds";
 import { listAttempts, soundStats, type SoundStat } from "@/lib/progress";
 import { ArrowRightIcon, BookIcon, ChatIcon } from "./icons";
 import { Card } from "./ui";
+import { VoiceInputButton } from "./VoiceInputButton";
 
 type Summary = { count: number; avg7: number | null; weak: SoundStat[] };
 
@@ -65,13 +66,16 @@ export function HomeView() {
               if (e.key === "Enter" && !e.shiftKey) submit(e);
             }}
           />
-          <button
-            type="submit"
-            disabled={!text.trim()}
-            className="mt-3 inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-40"
-          >
-            Practice it <ArrowRightIcon size={18} />
-          </button>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              type="submit"
+              disabled={!text.trim()}
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-accent-ink transition-opacity hover:opacity-90 disabled:opacity-40"
+            >
+              Practice it <ArrowRightIcon size={18} />
+            </button>
+            <VoiceInputButton onTranscript={(spoken) => setText(spoken)} />
+          </div>
         </form>
       </Card>
 
